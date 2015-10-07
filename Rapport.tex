@@ -1,0 +1,141 @@
+\documentclass[12pt, letterpaper]{article} % book, report, article
+
+\usepackage[utf8]{inputenc} % input encoding : utf8, latin9, latin1
+\usepackage[francais]{babel} % document language : typography + titles...
+\usepackage[T1]{fontenc} % font encoding : ö = single letter and not o + accent
+
+\usepackage[hyphens]{url} % Allow to use \url{}
+\usepackage{hyperref} % Allow to click URL
+\hypersetup{plainpages=false, breaklinks=false, colorlinks=true}
+%\hypersetup{citecolor=blue}
+\usepackage{geometry}
+
+\usepackage{graphicx} % To import graphics easely :)
+\usepackage{amssymb} % Math stuff
+\usepackage{amsmath} % Math stuff
+%\usepackage{caption} % Help customize captions
+%\usepackage{subcaption} % Help customize subcaptions
+
+\usepackage[numbers,sort&compress]{natbib} % Allows to cite with names
+%\usepackage{acronym} % Helps to manage acronyms 
+
+\DeclareUnicodeCharacter{00A0}{ } % Remove the inputenc error
+
+% For the separated bibliography
+\usepackage{multibib}
+\newcites{TresPertinent}{Très pertinents}
+\newcites{Pertinent}{Pertinents}
+\newcites{Autre}{Autres}
+
+\begin{document}
+
+\input{PageTitre}
+%Proposition de projet : 3-4 pages [Latex version article]
+
+\section{Introduction}
+Un robot est un appareil autonome capable de percevoir et d'interagir avec son environnement. Il est muni de capteurs et d'actionneurs, dont le contrôle est assuré par un ordinateur. L'interaction entre les composantes du robot fait de la robotique un domaine interdisciplinaire réunissant l'ingénierie mécanique, électrique et informatique.
+
+La robotique est un sujet vaste et les robots sont présents dans différents domaines d'application. Parmi la gamme existante, notons les robots industriels, chirurgicaux, militaires et domestiques. La hiérarchisation des domaines de la robotique permet aux chercheurs de concentrer leurs efforts sur la résolution de problèmes plus précis.   
+ 
+La robotique mobile est une spécialisation de la robotique se caractérisant par l'utilisation de robots ayant la capacité de se déplacer dans leur environnement. Cette aptitude du robot à se déplacer augmente considérablement la complexité des problèmes associés à l'atteinte de ses objectifs. Premièrement, le robot ne possède pas de repère fixe lui permettant de déterminer sa position et deuxièmement, il doit généralement se déplacer afin d'effectuer toutes les observations nécessaires à la modélisation de son environnement. 
+
+Dans le cadre de mon projet de maitrise, je m'intéresse à la robotique mobile évoluant à l'extérieur, que l'on nomme robotique de terrain. La navigation d'un robot dans ces environnements est complexe, car les terrains sont souvent inconnus, difficiles à modéliser, et les conditions sont changeantes. D'ailleurs, le sujet est suffisamment important pour qu'un journal y soit consacré : le journal de robotique de terrain (\textit{Journal of Field Robotics}). 
+
+\section{Problématique}
+Dans la section suivante, je vais définir quelques concepts associés à ma problématique. Par la suite, je vais indiquer l'importance de résoudre ce problème et vais finalement discuter de l'état de l'art.
+
+\section{Définitions et concepts}
+Tout d'abord, il est important de définir quelques concepts importants de la problématique. Le terme \emph{navigation} sera utilisé pour décrire les actions du robot lui permettant de déterminer sa position ainsi qu'un chemin menant d'un point de départ à un point d'arrivée. La navigation est dite autonome, car aucune intervention d'un agent externe au robot ne devra être nécessaire pour effectuer cette tâche. Dans le cadre de mes recherches, les déplacements seront adaptés pour une plateforme mobile terrestre, c'est-à-dire qu'ils seront effectués uniquement sur des surfaces solides d'un environnement extérieur. Finalement, la notion de déformabilité de l'environnement est un élément majeur de ma proposition de recherche. Les éléments déformables qui seront considérés sont : les obstacles et les surfaces navigables. Les branches et les herbes sont des exemples d'obstacles déformables, alors que la neige et la boue sont des exemples de surfaces déformables. Cette notion est importante, car les actions effectuées par le robot ont la capacité de modifier l'environnement, mais inversement les déformations de l'environnement influencent la capacité de navigation du robot dans l'espace.
+
+\subsection{Importance du problème}
+\label{s:problematique}
+Pour un robot, la capacité de se déplacer dans un environnement extérieur est nécessaire à une multitude d'applications : exploration planétaire, intervention contre les engins explosifs, transport de marchandises, recherche et sauvetage, etc. Selon Wellington et al. \cite{Wellington2004}, la navigation dans des terrains extérieurs est une tâche difficile pour plusieurs raisons : 
+\begin{itemize}
+    \item l'environnement est souvent inconnu ou changeant ;
+    \item les interactions entre le véhicule et son milieu sont souvent complexes ;
+    \item les capteurs sont bruités et leurs portées sont limitées;
+    \item la capacité des actionneurs est limitée.
+\end{itemize} 
+
+Afin de résoudre des problèmes d'une telle complexité, il est souvent nécessaire de restreindre les contraintes réelles à un sous-ensemble des contraintes pour lesquelles on veut trouver une solution. Dans cette optique, deux techniques sont généralement employées : effectuer les expérimentations dans un environnement contrôlé ou poser l'hypothèse que la contrainte sera respectée. Un exemple d'hypothèse classique en robotique mobile est de considérer que l'environnment est en deux dimensions et d'abstraire le sol à un plan, comme c'est le cas dans l'algorithme de cartographie et localisation simultanée de Grisetti et al. \cite{Grisetti2007}. Selon Frank et al. \cite{Frank2011}, une autre hypothèse souvent utilisée pour la navigation en robotique est de considérer l'environnement comme statique et rigide. 
+
+Dans un contexte réel, ces hypothèses ne sont pas toujours respectées, ce qui peut causer des problèmes. Par exemple, la déformation du terrain ou d'un obstacle sous l'action du robot pourrait mener à son immobilisation ou à sa chute et pourrait causer divers bris de l'équipement. Tel que spécifié par Sinha et al. \cite{Sinha2013}, la navigation sécuritaire des véhicules robotisés est un élément-clé à la réussite des opérations dans des environnements complexes et non contrôlés. D'autre part, la déformation d'obstacles par le robot pourrait lui permettre de se déplacer sur des chemins autrement considérés comme inaccessibles dans un environnement rigide. En considérant les déformations potentielles des obstacles, il serait possible de trouver un chemin menant le véhicule au point d'arrivée désiré.   
+
+Somme toute, il semble important de considérer la contrainte de déformation de l'environnement. Cela pourrait permettre d'améliorer la sécurité du robot et d'optimiser ses déplacements. Par conséquent, les solutions de navigation en environnement extérieur pour les robots autonomes seraient plus robustes. C'est pourquoi, au cours de mes études à la maîtrise, \emph{je tenterai de trouver des solutions au problème de navigation autonome des robots dans un environnement extérieur déformable.}
+
+\subsection{État de l'art}
+La navigation et la planification de trajet en robotique mobile sont des sujets largement abordés dans la littérature. Plusieurs articles présentent des solutions permettant de caractériser le sol afin d'optimiser le chemin à suivre \cite{Brooks2012} ou d'ajuster l'odométrie \cite{Reinstein2013}. Certains articles proposent des solutions pour éviter les obstacles de l'environnement du robot \cite{Heidarsson2011} \cite{Lalonde2006} \cite{Sinha2013}. Il y a aussi des documents abordant les problèmes causés par la végétation \cite{Haselich2012} \cite{Laible2013} et la neige \cite{Boyraz2013} \cite{Trautmann2011}. En revanche, peu d'articles s'attaquent directement au problème de la déformation de l'environnement \cite{Frank2011} \cite{Frank2009} \cite{Ho2013} et ils se restreignent plutôt à des environnements structurés. Afin d'obtenir davantage d'information sur l'état de l'art, vous pouvez consulter la bibliographie annotée~\ref{s:biblio} de ce document.
+
+\section{Objectifs}
+\label{s:objectifs}
+Lors de mes recherches, je vise à améliorer l'adaptabilité et la robustesse de la navigation des robots terrestres dans un environnement extérieur déformable. Mon travail sera concentré sur la déformation des surfaces enneigée et des obstacles végétaux. À cet effet, je compte atteindre les objectifs suivants :
+\begin{enumerate}
+\item déterminer une source de données permettant le développement et la validation des algorithmes, en plus d'être représentatives des conditions établies dans la problématique ;
+\item développer une méthode permettant de mesurer l'effort nécessaire au robot pour naviger dans une zone déformable de l'environnement ; 
+\item déterminer s'il est possible de prédire cette mesure d'effort sans interaction physique directe entre le robot et l'environnement ;
+\item modéliser l'effort de navigation précédemment prédit dans l'environnement local du robot ;
+\item évaluer le taux d'erreur des valeurs prédites par rapport aux valeurs mesurées lors des expérimentations sur le terrain.
+\end{enumerate}
+
+\section{Méthodologie}
+Premièrement, les données nécessaires à mes expérimentations étant très spécifiques, il serait impossible d'utiliser des ensembles de données actuellement disponibles au public. De plus, aucun simulateur existant ne pourrait représenter la complexité des environnements du robot. Les données utilisées seront donc récoltées sur les surfaces enneigées et les zones de végétation du campus de l'Université Laval. L'acquisition sera possible grâce à la plateforme robotique Husky A200 \cite{huskyClearpath} et les capteurs dont il est équipé. La table~\ref{tab:capteurs} contient l'ensemble des capteurs de la plateforme robotique et le type des données associées. De plus, l'ensemble de bibliothèques logicielles et d'outils \textit{Robot Operating System} (ROS)~\cite{ros} sera utilisé pour le développement algorithmique et la communication avec les composantes matérielles.
+
+\begin{table}[h]
+    \begin{center}
+    \caption{\label{tab:capteurs} Ensembles des capteurs du Husky A200 et du type de données associées.}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Capteur} & \textbf{Type de données} & \textbf{Précision et/ou}\\
+        				 &							& \textbf{résolution} \\
+        \hline
+        \hline
+        Caméra & Photo & 800x600 pixels\\
+        \hline
+        Capteur laser & Nuage de point & $\pm$ 0,04 mètre\\
+                      & tridimensionnel & 0,25 degré\\
+        \hline
+        Centrale à inertie & Accélérations et & Inconnue\\
+                           & vitesses angulaires & Inconnue\\
+        \hline
+        Courant des moteurs & Mesure du couple moteur & Inconnue\\
+        \hline     
+        Encodeur des roues & Position angulaire des roues & 200000 impulsions\\
+        				   &							  &  par mètre\\
+        \hline
+        Système de positionnement & Coordonnées & 0,18 mètre\\
+        mondial (GPS)             & géographiques & \\
+        \hline
+    \end{tabular}
+    \end{center}
+\end{table}
+
+La mesure de l'effort nécessaire à la navigation du robot dans l'environnement déformable sera établie  suite à l'analyse des données récoltées. L'utilisation conjointe des capteurs proprioceptifs et extéroceptifs permettront d'évaluer cette mesure.
+
+La prédiction de cette dernière sans interaction physique entre le robot et l'environnement sera effectuée grâce à des algorithmes d'apprentissage automatique. Les données utilisées seront obtenues des capteurs distants, tel que la caméra et le capteur laser. La supervision de l'apprentissage sera effectuée directement par le robot. Cette étape sera possible grâce au traitement des données obtenues ultérieurement, lors de l'interaction physique entre le robot et la zone à évaluer. Pour cette étape, les capteurs proprioceptifs et extéroceptifs pourront être utilisés.  
+
+En ce qui concerne la modélisation de l'effort de navigation dans l'environnement déformable local du robot, une carte de coût sera utilisé. L'environnement en trois dimensions sera projeté sur le plan approximant le sol et sera discrétisé en cases de taille prédéfinie. Une valeur de coût sera ensuite attribué à chaque case. 
+
+Finalement, l'évaluation des performances de la méthode sera effectuée en comparant les valeurs d'effort prédites aux valeurs mesurées lors des expérimentations.
+
+\section{Échéancier}
+La session d'automne 2013 constituait la première session de mes études à la maitrise. Cette première session m'a permis d'apprendre les principaux concepts de la robotique probabiliste et de me familiariser avec la plateforme robotique Husky A200. La session actuelle me permet d'apprendre les fondements de l'apprentissage automatique et de découvrir le fonctionnement de l'ensemble de bibliothèques logicielles et d'outils ROS. L'acquisition et le traitement des données débuteront à la fin de la session en cours et se poursuivront jusqu'au début de la rédaction de mon mémoire. Je terminerai mes travaux de recherche à la fin de la session d'été 2015, il sera donc nécessaire de débuter la rédaction de mon mémoire à la fin de la session d'hiver 2015. 
+
+%La bibliographie étendue accompagnant la proposition de recherche pourrait s’étendre de 15 à 50 références dépendant de votre sujet. Selon le détail au niveau des lectures. 4à10 dans chaque catégorie :  À détailler,  À lire au complet,  À Survoler,  Idée générale
+
+\section{Bibliographie}
+\label{s:biblio}
+Les documents présentés dans la bibliographie sont classés en trois sections selon la pertinence qu'ils ont avec mon sujet de recherche : très pertinents, pertinents et autres. La bibliographie contient les documents pour lesquels il y a une référence dans le présent document, ainsi que tous les autres documents consultés jusqu'à présent lors de mes recherches. 
+
+\nociteTresPertinent{*}
+\bibliographystyleTresPertinent{IEEEannot}
+\bibliographyTresPertinent{TresPertinent}
+
+\nocitePertinent{*}
+\bibliographystylePertinent{IEEEannot}
+\bibliographyPertinent{Pertinent}
+
+\nociteAutre{*}
+\bibliographystyleAutre{IEEEannot}
+\bibliographyAutre{Autre}
+
+\end{document}
